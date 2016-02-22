@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author janikoskela
  */
-public abstract class ParseFactory {
+public abstract class HSLParseFactory {
     
     public static List<com.janikoskela.journeyplanner.model.Geocoding> parseGeocodingResponse(String response) {
         Type listType = new TypeToken<List<Geocoding>>(){}.getType();

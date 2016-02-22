@@ -23,7 +23,7 @@ import com.janikoskela.journeyplanner.model.CoordinateSystem;
 import com.janikoskela.journeyplanner.model.Coordinates;
 import com.janikoskela.journeyplanner.model.Geocoding;
 import com.janikoskela.journeyplanner.model.LocationType;
-import com.janikoskela.journeyplanner.parse.hsl.ParseFactory;
+import com.janikoskela.journeyplanner.parse.hsl.HSLParseFactory;
 import java.io.Serializable;
 import java.util.List;
 
@@ -31,7 +31,7 @@ import java.util.List;
  *
  * @author janikoskela
  */
-public class ReverseGeocodingRequest extends Request implements Serializable  {
+public class HSLReverseGeocodingRequest extends HSLRequest implements Serializable  {
     private static final long serialVersionUID = 7526472295622776147L;
     private final static String ACTION_NAME = "reverse_geocode";
     
@@ -59,7 +59,7 @@ public class ReverseGeocodingRequest extends Request implements Serializable  {
     @URLParamKey("result_contains")
     private LocationType locationType;
 
-    public ReverseGeocodingRequest(String apiUsername, String apiPassword, CoordinateSystem inCoordinateSystem, CoordinateSystem outCoordinateSystem, Coordinates coordinates) {
+    public HSLReverseGeocodingRequest(String apiUsername, String apiPassword, CoordinateSystem inCoordinateSystem, CoordinateSystem outCoordinateSystem, Coordinates coordinates) {
         super(apiUsername, apiPassword, inCoordinateSystem, outCoordinateSystem);
         this.coordinates = coordinates;
     }
@@ -98,7 +98,7 @@ public class ReverseGeocodingRequest extends Request implements Serializable  {
 
     @Override
     protected List<Geocoding> parseResponse(String response) {
-        return ParseFactory.parseGeocodingResponse(response);
+        return HSLParseFactory.parseGeocodingResponse(response);
     }
 
     @Override

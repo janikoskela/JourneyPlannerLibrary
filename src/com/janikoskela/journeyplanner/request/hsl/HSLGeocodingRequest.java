@@ -21,7 +21,7 @@ import com.janikoskela.journeyplanner.model.City;
 import com.janikoskela.journeyplanner.model.CoordinateSystem;
 import com.janikoskela.journeyplanner.model.LocationType;
 import com.janikoskela.journeyplanner.model.Geocoding;
-import com.janikoskela.journeyplanner.parse.hsl.ParseFactory;
+import com.janikoskela.journeyplanner.parse.hsl.HSLParseFactory;
 import java.io.Serializable;
 import java.util.List;
 import com.janikoskela.journeyplanner.annotation.URLParamKey;
@@ -31,7 +31,7 @@ import com.janikoskela.journeyplanner.exception.ConnectionTimeoutException;
  *
  * @author janikoskela
  */
-final public class GeocodingRequest extends Request implements Serializable {
+final public class HSLGeocodingRequest extends HSLRequest implements Serializable {
     private static final long serialVersionUID = 7526472295622776147L;
     private final static String ACTION_NAME = "geocode";
 
@@ -65,7 +65,7 @@ final public class GeocodingRequest extends Request implements Serializable {
     @URLParamKey("disable_unique_stop_names")
     private int disableUniqueStopNames;
 
-    public GeocodingRequest(String apiUsername, String apiPassword, CoordinateSystem inCoordinateSystem, CoordinateSystem outCoordinateSystem, String searchTerm) {
+    public HSLGeocodingRequest(String apiUsername, String apiPassword, CoordinateSystem inCoordinateSystem, CoordinateSystem outCoordinateSystem, String searchTerm) {
         super(apiUsername, apiPassword, inCoordinateSystem, outCoordinateSystem);
         this.searchTerm = searchTerm;
     }
@@ -183,6 +183,6 @@ final public class GeocodingRequest extends Request implements Serializable {
 
     @Override
     protected List<Geocoding> parseResponse(String response) {
-        return ParseFactory.parseGeocodingResponse(response);
+        return HSLParseFactory.parseGeocodingResponse(response);
     }
 }

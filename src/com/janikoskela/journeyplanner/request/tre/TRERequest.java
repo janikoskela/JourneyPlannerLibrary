@@ -14,24 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.janikoskela.journeyplanner.request.hsl;
+package com.janikoskela.journeyplanner.request.tre;
 
 import com.janikoskela.journeyplanner.exception.ConnectionException;
 import com.janikoskela.journeyplanner.model.CoordinateSystem;
+import com.janikoskela.journeyplanner.request.HttpRequest;
 import java.util.List;
 
 /**
  *
  * @author janikoskela
  */
-public abstract class Request extends com.janikoskela.journeyplanner.request.HttpRequest {
-    private static final String BASE_URL = "http://api.reittiopas.fi/hsl/prod/?request=";
+public abstract class TRERequest extends HttpRequest {
+    private static final String BASE_URL = "http://api.publictransport.tampere.fi/prod/?request=";
     private final String apiUsername;
     private final String apiPassword;
     private final CoordinateSystem inCoordinateSystem;
     private final CoordinateSystem outCoordinateSystem;
     
-    public Request(String apiUsername, String apiPassword, CoordinateSystem inCoordinateSystem, CoordinateSystem outCoordinateSystem) {
+    public TRERequest(String apiUsername, String apiPassword, CoordinateSystem inCoordinateSystem, CoordinateSystem outCoordinateSystem) {
         this.apiPassword = apiPassword;
         this.apiUsername = apiUsername;
         this.inCoordinateSystem = inCoordinateSystem;
