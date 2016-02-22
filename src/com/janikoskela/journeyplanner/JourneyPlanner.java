@@ -20,7 +20,9 @@ import com.janikoskela.journeyplanner.exception.ConnectionException;
 import com.janikoskela.journeyplanner.exception.ConnectionTimeoutException;
 import com.janikoskela.journeyplanner.model.Geocoding;
 import com.janikoskela.journeyplanner.request.hsl.HSLGeocodingRequest;
+import com.janikoskela.journeyplanner.request.hsl.HSLReverseGeocodingRequest;
 import com.janikoskela.journeyplanner.request.tre.TREGeocodingRequest;
+import com.janikoskela.journeyplanner.request.tre.TREReverseGeocodingRequest;
 import java.util.List;
 
 /**
@@ -35,4 +37,13 @@ public class JourneyPlanner {
     public static List<Geocoding> getTampereRegionGeocoding(TREGeocodingRequest request) throws ConnectionException, ConnectionTimeoutException {
         return request.execute();
     }
+    
+    public static List<Geocoding> getHelsinkiRegionReverseGeocoding(HSLReverseGeocodingRequest request) throws ConnectionException, ConnectionTimeoutException {
+        return request.execute();
+    }
+    
+    public static List<Geocoding> getTampereRegionReverseGeocoding(TREReverseGeocodingRequest request) throws ConnectionException, ConnectionTimeoutException {
+        return request.execute();
+    }
+    
 }
