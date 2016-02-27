@@ -14,21 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.janikoskela.journeyplanner.model.tre;
-
-import com.google.gson.annotations.SerializedName;
+package com.janikoskela.journeyplanner.parse;
 
 /**
  *
  * @author janikoskela
  */
-public class Coordinates {
-
-    @SerializedName("x")
-    public double x;
+public abstract class XMLParser {
     
-    @SerializedName("y")
-    public double y;
-    
-    public Coordinates() {}
 }

@@ -61,7 +61,7 @@ public abstract class HttpRequest {
         }
     }
     
-    protected <T>List<T> execute() throws ConnectionException, ConnectionTimeoutException {
+    protected <T> List<T> execute() throws ConnectionException, ConnectionTimeoutException {
         String url = this.getUrl();
         String resp = HttpConnection.sendRequest(url);
         return this.parseResponse(resp);

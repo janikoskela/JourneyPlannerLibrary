@@ -16,74 +16,117 @@
  */
 package com.janikoskela.journeyplanner.parse.tre;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.janikoskela.journeyplanner.model.Coordinates;
 import com.janikoskela.journeyplanner.model.LocationType;
-import com.janikoskela.journeyplanner.model.tre.Geocoding;
+import com.janikoskela.journeyplanner.model.Geocoding;
+import com.janikoskela.journeyplanner.model.LocationDetails;
+import com.janikoskela.journeyplanner.parse.JSONParser;
 import com.janikoskela.journeyplanner.util.Utils;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
  * @author janikoskela
  */
-public abstract class TREParseFactory {
+public abstract class TREParseFactory extends JSONParser {
+    private final static String LOCATION_TYPE_STREET = "street";
+    private final static String LOCATION_TYPE_ADDRESS = "address";
+    private final static String LOCATION_TYPE_POI = "poi";
+    private final static String LOCATION_TYPE_STOP = "stop";
+    private final static String KEY_HOUSE_NUMBER = "houseNumber";
+    private final static String KEY_POI_CLASS = "poiClass";
+    private final static String KEY_CODES = "codes";
+    private final static String KEY_COORDINATES = "coords";
+    private final static String KEY_CITY = "city";
+    private final static String KEY_NAME = "name";
+    private final static String KEY_LANG = "lang";
+    private final static String KEY_MATCHED_NAME = "matchedName";
+    private final static String KEY_LOCATION_TYPE = "locType";
+    private final static String KEY_DETAILS = "details";
     
-    public static List<com.janikoskela.journeyplanner.model.Geocoding> parseGeocodingResponse(String response) {
-        Type listType = new TypeToken<List<Geocoding>>(){}.getType();
-        List<Geocoding> result = parse(response, listType);
-        List<com.janikoskela.journeyplanner.model.Geocoding> out = new ArrayList<>();
-        for (Geocoding g : result) {
-            com.janikoskela.journeyplanner.model.Geocoding geo = new com.janikoskela.journeyplanner.model.Geocoding();
-            if (g.city != null)
-                geo.setCity(g.city);
-            if (g.coordinates != null) {
-                String[] split = g.coordinates.split(",");
-                if (split.length == 2) {
-                    Double x = Utils.parseDouble(split[0]);
-                    Double y = Utils.parseDouble(split[1]);
-                    if (x != null && y != null) {
-                        com.janikoskela.journeyplanner.model.Coordinates coord = new com.janikoskela.journeyplanner.model.Coordinates(x, y);
-                        geo.setCoordinates(coord);
-                    }
-                }
+    public static Coordinates parseCoordinatesResponse(String response) {
+        if (response == null)
+            return null;
+        String[] split = response.split(",");
+        if (split.length == 2) {
+            Double x = Utils.parseDouble(split[0]);
+            Double y = Utils.parseDouble(split[1]);
+            if (x != null && y != null) {
+                return new Coordinates(x, y);
             }
-            if (g.details != null) {
-                com.janikoskela.journeyplanner.model.LocationDetails details = new com.janikoskela.journeyplanner.model.LocationDetails();
-                if (g.details.codes != null)
-                    details.setCodes(g.details.codes);
-                if (g.details.houseNumber != null)
-                    details.setHouseNumber(g.details.houseNumber);
-                if (g.details.poiClass != null)
-                    details.setPoiClass(g.details.poiClass);
-                geo.setDetails(details);
-            }
-            if (g.lang != null)
-                geo.setLang(g.lang);
-            if (g.matchedName != null)
-                geo.setMatchedName(g.matchedName);
-            if (g.name != null)
-                geo.setName(g.name);
-            if (g.locationType != null) {
-                if (g.locationType.equals("address"))
-                    geo.setLocationType(LocationType.ADDRESS);
-                else if (g.locationType.equals("poi"))
-                    geo.setLocationType(LocationType.POI);
-                else if (g.locationType.equals("street"))
-                    geo.setLocationType(LocationType.STREET);
-                else if (g.locationType.equals("stop"))
-                    geo.setLocationType(LocationType.STOP);
-                else
-                    geo.setLocationType(LocationType.UNKNOWN);
-            }
-            out.add(geo);
         }
-        return out;
+        return null;
     }
     
-    private static <T>List <T> parse(String response, Type listType) {
-        return new Gson().fromJson(response, listType);    
+    public static LocationDetails parseDetailsResponse(String response) {
+        LocationDetails details = new LocationDetails();
+        JSONObject obj;
+        try {
+            obj = new JSONObject(response);
+        } catch (Exception e) {
+            return details;
+        }
+        String houseNumber = getString(obj, KEY_HOUSE_NUMBER);
+        if (houseNumber != null)
+            details.setHouseNumber(houseNumber);
+        String poiClass = getString(obj, KEY_POI_CLASS);
+        if (poiClass != null)
+            details.setPoiClass(poiClass);
+        String codes = getString(obj, KEY_CODES);
+        if (codes != null)
+            details.setCodes(codes);
+        return details;
+    }
+    
+    public static LocationType parseLocationTypeResponse(String response) {
+        if (response != null) {
+            switch(response) {
+                case LOCATION_TYPE_STREET:
+                    return LocationType.STREET;
+                case LOCATION_TYPE_POI:
+                    return LocationType.POI;
+                case LOCATION_TYPE_ADDRESS:
+                    return LocationType.ADDRESS;
+                case LOCATION_TYPE_STOP:
+                    return LocationType.STOP;
+            }
+        }
+        return LocationType.UNKNOWN;
+    }
+    
+    public static List<Geocoding> parseGeocodingResponse(String response) {
+        JSONArray root = new JSONArray(response);
+        Iterator i = root.iterator();
+        List<Geocoding> geocodings = new ArrayList<>();
+        while (i.hasNext()) {
+            JSONObject obj = (JSONObject)i.next();
+            Geocoding geocode = new Geocoding();
+            Coordinates coordinates = parseCoordinatesResponse(getString(obj, KEY_COORDINATES));
+            if (coordinates != null)
+                geocode.setCoordinates(coordinates);
+            else
+                continue;
+            String city = getString(obj, KEY_CITY);
+            if (city != null)
+                geocode.setCity(city);
+            String locationType = getString(obj, KEY_LOCATION_TYPE);
+            geocode.setLocationType(parseLocationTypeResponse(locationType));
+            String name = getString(obj, KEY_NAME);
+            if (name != null)
+                geocode.setName(name);
+            String matchedName = getString(obj, KEY_MATCHED_NAME);
+            if (matchedName != null)
+                geocode.setMatchedName(matchedName);
+            String lang = getString(obj, KEY_LANG);
+            if (lang != null)
+                geocode.setLang(lang);
+            geocode.setDetails(parseDetailsResponse(getString(obj, KEY_DETAILS)));
+            geocodings.add(geocode);
+        }
+        return geocodings;
     }
 }
