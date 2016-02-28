@@ -19,10 +19,13 @@ package com.janikoskela.journeyplanner;
 import com.janikoskela.journeyplanner.exception.ConnectionException;
 import com.janikoskela.journeyplanner.exception.ConnectionTimeoutException;
 import com.janikoskela.journeyplanner.model.Geocoding;
+import com.janikoskela.journeyplanner.model.Stop;
 import com.janikoskela.journeyplanner.request.hsl.HSLGeocodingRequest;
 import com.janikoskela.journeyplanner.request.hsl.HSLReverseGeocodingRequest;
+import com.janikoskela.journeyplanner.request.hsl.HSLStopInformationRequest;
 import com.janikoskela.journeyplanner.request.tre.TREGeocodingRequest;
 import com.janikoskela.journeyplanner.request.tre.TREReverseGeocodingRequest;
+import com.janikoskela.journeyplanner.request.tre.TREStopInformationRequest;
 import java.util.List;
 
 /**
@@ -46,4 +49,11 @@ public class JourneyPlanner {
         return request.execute();
     }
     
+    public static List<Stop> getHelsinkiRegionStopInformation(HSLStopInformationRequest request) throws ConnectionException, ConnectionTimeoutException {
+        return request.execute();
+    }
+    
+    public static List<Stop> getTampereRegionStopInformation(TREStopInformationRequest request) throws ConnectionException, ConnectionTimeoutException {
+        return request.execute();
+    }
 }
