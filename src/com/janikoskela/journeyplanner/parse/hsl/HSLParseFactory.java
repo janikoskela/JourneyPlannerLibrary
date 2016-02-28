@@ -87,7 +87,8 @@ public abstract class HSLParseFactory extends JSONParser {
     
     public static List<Departure> parseDeparturesResponse(JSONArray deps) {
         List<Departure> departures = new ArrayList<>();
-        JSONArray arr;
+        if (deps == null)
+            return departures;
         Iterator i = deps.iterator();
         while (i.hasNext()) {
             try {
@@ -152,8 +153,7 @@ public abstract class HSLParseFactory extends JSONParser {
                 if (timetableLink != null)
                     stop.setTimetableLink(timetableLink);
                 JSONArray departures = getJSONArray(obj, KEY_DEPARTURES);
-                if (departures != null)
-                    stop.setDepartures(parseDeparturesResponse(departures));
+                stop.setDepartures(parseDeparturesResponse(departures));
                 stops.add(stop);
             } catch (Exception e) {}
         }
